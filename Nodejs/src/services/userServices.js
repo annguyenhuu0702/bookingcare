@@ -27,12 +27,12 @@ let handleUserLogin = (email, password) => {
           }
         } else {
           userData.errCode = 2;
-          userData.errMessage = `User not found!`;
+          userData.message = `User not found!`;
         }
       } else {
         // return error
         userData.errCode = 1;
-        userData.errMessage = `Your's email isn't exits in your system. Please try other email`;
+        userData.message = `Your's email isn't exits in your system. Please try other email`;
       }
       resolve(userData);
     } catch (e) {
