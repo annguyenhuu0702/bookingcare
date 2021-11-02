@@ -141,9 +141,7 @@ function ModalUser({ isOpen, toogleUserModal, createNewUser }) {
 // class ModalUser extends Component {
 //   constructor(props) {
 //     super(props);
-//     this.state = {
-
-//     };
+//     this.state = {};
 //   }
 
 //   state = {};
