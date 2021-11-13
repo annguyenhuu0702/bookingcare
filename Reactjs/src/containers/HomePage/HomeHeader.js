@@ -3,9 +3,15 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import "./HomeHeader.scss";
 import { FormattedMessage } from "react-intl";
+import { languages } from "../../utils/constant";
+import { changeLanguageApp } from "../../store/actions/appActions";
 
 class HomeHeader extends Component {
+  changeLanguage = (language) => {
+    this.props.changeLanguageAppRedux(language);
+  };
   render() {
+    let language = this.props.language;
     return (
       <Fragment>
         <div className="home-header-container">
@@ -66,8 +72,36 @@ class HomeHeader extends Component {
                 <i className="fas fa-question"></i>
                 <FormattedMessage id="homeheader.support" />
               </div>
-              <div className="language-vi">VN</div>
-              <div className="language-en">EN</div>
+              <div
+                className={
+                  language === languages.VI
+                    ? "language-vi active"
+                    : "language-vi"
+                }
+              >
+                <span
+                  onClick={() => {
+                    this.changeLanguage(languages.VI);
+                  }}
+                >
+                  VN
+                </span>
+              </div>
+              <div
+                className={
+                  language === languages.EN
+                    ? "language-en active"
+                    : "language-en"
+                }
+              >
+                <span
+                  onClick={() => {
+                    this.changeLanguage(languages.EN);
+                  }}
+                >
+                  EN
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -145,12 +179,14 @@ class HomeHeader extends Component {
 const mapStateToProps = (state) => {
   return {
     isLoggedIn: state.user.isLoggedIn,
-    lang: state.app.language,
+    language: state.app.language,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeHeader);
