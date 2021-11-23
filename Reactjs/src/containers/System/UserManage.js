@@ -36,7 +36,6 @@ function UserManage() {
   const createNewUser = async (data) => {
     try {
       let response = await createNewUerService(data);
-      // console.log(response);
       if (response && response.errCode !== 0) {
         alert(response.errMessage);
       } else {
@@ -49,7 +48,6 @@ function UserManage() {
   };
 
   const handleDeleteUser = async (user) => {
-    // console.log(user);
     try {
       let res = await deleteUserService(user.id);
       if (res && res.errCode === 0) {
