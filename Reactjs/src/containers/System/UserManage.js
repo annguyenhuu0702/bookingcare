@@ -8,6 +8,7 @@ import {
   deleteUserService,
 } from "./../../services/userService";
 import ModalUser from "./ModalUser";
+import ModalEditUser from "./ModalEditUser";
 import { emitter } from "../../utils/emitter";
 
 // function UserManage() {
@@ -126,6 +127,7 @@ class UserManage extends Component {
     this.state = {
       arrUsers: [],
       isOpenModalUser: false,
+      isOpenModalEditUser: false,
     };
   }
 
@@ -157,7 +159,6 @@ class UserManage extends Component {
   createNewUser = async (data) => {
     try {
       let response = await createNewUerService(data);
-      console.log(response);
       if (response && response.errCode !== 0) {
         alert(response.errMessage);
       } else {
@@ -171,6 +172,27 @@ class UserManage extends Component {
     }
   };
 
+  handleDeleteUser = async (user) => {
+    console.log(user);
+    try {
+      let res = await deleteUserService(user.id);
+      if (res && res.errCode === 0) {
+        await this.getAllUsersFromReact();
+      } else {
+        alert(res.errMessage);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  handleEditUser = (user) => {
+    console.log(user);
+    this.setState({
+      isOpenModalEditUser: true,
+    });
+  };
+
   render() {
     let arrUsers = this.state.arrUsers;
 
@@ -180,6 +202,11 @@ class UserManage extends Component {
           isOpen={this.state.isOpenModalUser}
           toogleUserModal={this.toogleUserModal}
           createNewUser={this.createNewUser}
+        />
+        <ModalEditUser
+          isOpen={this.state.isOpenModalEditUser}
+          // toogleUserModal={this.toogleUserModal}
+          // createNewUser={this.createNewUser}
         />
         <div className="title mt-3 mx-1">Manage users</div>
         <div className="mx-1 my-2">
@@ -210,10 +237,20 @@ class UserManage extends Component {
                         <td>{item.lastName}</td>
                         <td>{item.address}</td>
                         <td>
-                          <button className="btn-edit" type="">
+                          <button
+                            className="btn-edit"
+                            onClick={() => {
+                              this.handleEditUser(item);
+                            }}
+                          >
                             <i className="fas fa-pencil-alt"></i>
                           </button>
-                          <button className="btn-delete" type="">
+                          <button
+                            className="btn-delete"
+                            onClick={() => {
+                              this.handleDeleteUser(item);
+                            }}
+                          >
                             <i className="fas fa-trash"></i>
                           </button>
                         </td>
