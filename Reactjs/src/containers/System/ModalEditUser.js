@@ -3,11 +3,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { emitter } from "../../utils/emitter";
+import _ from "lodash";
 
 class ModalEditUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      id: "",
       email: "",
       password: "",
       firstName: "",
@@ -18,7 +20,19 @@ class ModalEditUser extends Component {
 
   state = {};
 
-  componentDidMount() {}
+  componentDidMount() {
+    let { currentUser } = this.props;
+    if (currentUser && !_.isEmpty(currentUser)) {
+      this.setState({
+        id: currentUser.id,
+        email: currentUser.email,
+        password: "hardcode",
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        address: currentUser.address,
+      });
+    }
+  }
 
   toogle = () => {
     this.props.toogleUserModal();
@@ -45,19 +59,14 @@ class ModalEditUser extends Component {
     return isValid;
   };
 
-  handleAddNewUser = () => {
+  handleSaveUser = () => {
     let isValid = this.checkValidateInPut();
     if (isValid === true) {
-      this.props.createNewUser(this.state);
-      this.setState({
-        email: "",
-        password: "",
-        firstName: "",
-        lastName: "",
-        address: "",
-      });
+      //call api edit user
+      this.props.editUser(this.state);
     }
   };
+
   render() {
     return (
       <Modal
@@ -85,6 +94,7 @@ class ModalEditUser extends Component {
                   this.handleOnChangeInput(e, "email");
                 }}
                 value={this.state.email}
+                disabled
               />
             </div>
             <div className="input-container">
@@ -95,6 +105,7 @@ class ModalEditUser extends Component {
                   this.handleOnChangeInput(e, "password");
                 }}
                 value={this.state.password}
+                disabled
               />
             </div>
             <div className="input-container">
@@ -132,12 +143,12 @@ class ModalEditUser extends Component {
         <ModalFooter>
           <Button
             onClick={() => {
-              this.handleAddNewUser();
+              this.handleSaveUser();
             }}
             color="primary"
             className="px-3"
           >
-            Add new
+            Save changes
           </Button>
           <Button
             onClick={() => {

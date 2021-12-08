@@ -6,6 +6,7 @@ import {
   getAllUsers,
   createNewUerService,
   deleteUserService,
+  editUserService,
 } from "./../../services/userService";
 import ModalUser from "./ModalUser";
 import ModalEditUser from "./ModalEditUser";
@@ -128,6 +129,7 @@ class UserManage extends Component {
       arrUsers: [],
       isOpenModalUser: false,
       isOpenModalEditUser: false,
+      userEdit: {},
     };
   }
 
@@ -156,6 +158,12 @@ class UserManage extends Component {
     });
   };
 
+  toogleUserEditModal = () => {
+    this.setState({
+      isOpenModalEditUser: !this.state.isOpenModalEditUser,
+    });
+  };
+
   createNewUser = async (data) => {
     try {
       let response = await createNewUerService(data);
@@ -173,7 +181,6 @@ class UserManage extends Component {
   };
 
   handleDeleteUser = async (user) => {
-    console.log(user);
     try {
       let res = await deleteUserService(user.id);
       if (res && res.errCode === 0) {
@@ -187,10 +194,27 @@ class UserManage extends Component {
   };
 
   handleEditUser = (user) => {
-    console.log(user);
     this.setState({
       isOpenModalEditUser: true,
+      userEdit: user,
     });
+  };
+
+  doEditUser = async (user) => {
+    let response = await editUserService(user);
+    console.log(response);
+    try {
+      if (response && response.errCode === 0) {
+        this.setState({
+          isOpenModalEditUser: false,
+        });
+        await this.getAllUsersFromReact();
+      } else {
+        console.log(response.errCode);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   render() {
@@ -203,11 +227,14 @@ class UserManage extends Component {
           toogleUserModal={this.toogleUserModal}
           createNewUser={this.createNewUser}
         />
-        <ModalEditUser
-          isOpen={this.state.isOpenModalEditUser}
-          // toogleUserModal={this.toogleUserModal}
-          // createNewUser={this.createNewUser}
-        />
+        {this.state.isOpenModalEditUser && (
+          <ModalEditUser
+            isOpen={this.state.isOpenModalEditUser}
+            toogleUserModal={this.toogleUserEditModal}
+            currentUser={this.state.userEdit}
+            editUser={this.doEditUser}
+          />
+        )}
         <div className="title mt-3 mx-1">Manage users</div>
         <div className="mx-1 my-2">
           <button
